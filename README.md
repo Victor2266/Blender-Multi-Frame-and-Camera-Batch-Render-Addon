@@ -13,6 +13,8 @@ With this add-on, the active camera will automatically be swapped so you can ren
 
 ## Instructions:
 
+The Panel is found in the Render Properties Tab on the right.
+
 You can specify individual frames by entering the frame numbers separated by commas 
 - (e.g., 1,25,250).
 

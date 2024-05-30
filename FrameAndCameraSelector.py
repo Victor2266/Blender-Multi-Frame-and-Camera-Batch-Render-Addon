@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Multiple Frame and Camera Selector",
     "author": "Victor Do",
-    "version": (1, 0),
+    "version": (2, 0),
     "blender": (2, 80, 0),
     "location": "Render Properties > Custom Render Panel",
     "description": "Allows specifying custom frames or frame ranges and multiple cameras for rendering in batches",

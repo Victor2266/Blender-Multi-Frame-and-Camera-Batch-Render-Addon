@@ -103,9 +103,9 @@ class SCENE_OT_RenderFrames(bpy.types.Operator):
                     scene.frame_set(int(frame_range))
                     scene.render.filepath = os.path.join(original_filepath, f"{cam_setting.camera.name}_frame{frame_range}")
                     if cam_setting.show_preview:
-                            bpy.ops.render.render('INVOKE_DEFAULT', write_still=True)
-                        else:
-                            bpy.ops.render.render(write_still=True)
+                        bpy.ops.render.render('INVOKE_DEFAULT', write_still=True)
+                    else:
+                        bpy.ops.render.render(write_still=True)
 
         scene.camera = original_camera
         scene.frame_set(original_frame)

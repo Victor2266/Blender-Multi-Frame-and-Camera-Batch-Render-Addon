@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Multiple Frame and Camera Selector",
     "author": "Victor Do",
-    "version": (2, 1),
+    "version": (2, 2),
     "blender": (2, 80, 0),
     "location": "Render Properties > Custom Render Panel",
     "description": "Allows specifying custom frames or frame ranges and multiple cameras for rendering in batches",
@@ -98,17 +98,32 @@ class RenderJob:
             frame = self.frames.pop(0)
             scene = context.scene
             scene.frame_set(frame)
-            scene.render.filepath = os.path.join(self.original_filepath, f"{self.cam_setting.camera.name}_frame{frame}")
-            bpy.app.handlers.render_post.append(self.render_post_handler)
-            print(f"Started rendering frame {frame} with {self.cam_setting.camera.name}")
-            def set_is_running_true():
-                self.is_running = True
-            
-            bpy.app.timers.register(set_is_running_true)
+            # Get the file extension based on the render settings
+            file_format = scene.render.image_settings.file_format
+            file_extension = '.png' if file_format == 'PNG' else '.jpg' if file_format == 'JPEG' else '.bmp' if file_format == 'BMP' else '.tiff' if file_format == 'TIFF' else '.exr' if file_format == 'OPEN_EXR' else ''
+            check_filepath = os.path.join(self.original_filepath, f"{self.cam_setting.camera.name}_frame{frame}{file_extension}")
+            filepath = os.path.join(self.original_filepath, f"{self.cam_setting.camera.name}_frame{frame}")
+            scene.render.filepath = filepath
 
-            bpy.ops.render.render('INVOKE_DEFAULT' if self.cam_setting.show_preview else 'EXEC_DEFAULT', write_still=True)
-            
+            # Check if the file already exists and if overwrite is disabled
+            if not scene.render.use_overwrite and os.path.isfile(bpy.path.abspath(check_filepath)):
+                print(f"Skipping frame {frame} with {self.cam_setting.camera.name} because it has already been rendered")
+                # Skip this frame and move to the next one
+                def set_is_running_true():
+                    self.is_running = True
+                
+                bpy.app.timers.register(set_is_running_true)
+                
+                bpy.app.timers.register(lambda: self.render_next_frame(bpy.context), first_interval=1.0)
+            else:
+                bpy.app.handlers.render_post.append(self.render_post_handler)
+                print(f"Started rendering frame {frame} with {self.cam_setting.camera.name}")
+                def set_is_running_true():
+                    self.is_running = True
+                
+                bpy.app.timers.register(set_is_running_true)
 
+                bpy.ops.render.render('INVOKE_DEFAULT' if self.cam_setting.show_preview else 'EXEC_DEFAULT', write_still=True)
         else:
             self.finish()
 

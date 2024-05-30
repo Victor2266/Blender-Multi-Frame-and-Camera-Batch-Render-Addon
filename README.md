@@ -1,15 +1,15 @@
 
-# Blender-Multi-Frame-and-Camera-Selector
+# Blender-Multi-Frame-and-Camera-Batch-Renderer
 
 ## Description:
 
-This is my code for a blender addon that allows me to select specific frames and cameras to render from automatically. 
+This is my code for a blender addon that allows me to select specific frames and cameras to render from all at once. 
 
 Have you ever wanted to automate the tedious process of rendering from specific frames or frame ranges and having to switch the active camera?
 
-For example, when you make an animation and want to use render certain frames from different camera angles?
+For example, when you make an animation and want to render certain frames from different camera angles?
 
-With this add-on, the active camera will automatically be swapped so you can render frame 42 from as many camera angles as you like all at the press of a single button.
+With this add-on, the active camera will automatically be swapped so you can render any frame range from as many camera angles as you like all at the press of a single button.
 
 ## Instructions:
 

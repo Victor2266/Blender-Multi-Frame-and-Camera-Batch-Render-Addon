@@ -27,7 +27,7 @@ class CameraSettings(bpy.types.PropertyGroup):
     show_preview: bpy.props.BoolProperty(
         name="Show Preview",
         description="If checked, the render will show a preview (uses more RAM)",
-        default=False,
+        default=True,
     )
 
 class CustomRenderPanel(bpy.types.Panel):

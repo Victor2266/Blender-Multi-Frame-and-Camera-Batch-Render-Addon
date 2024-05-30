@@ -1,5 +1,5 @@
 bl_info = {
-    "name": "Multiple Frame and Camera Selector",
+    "name": "Multiple Frame and Camera Batch Render",
     "author": "Victor Do",
     "version": (2, 2),
     "blender": (2, 80, 0),

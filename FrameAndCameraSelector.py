@@ -93,11 +93,11 @@ class SCENE_OT_RenderFrames(bpy.types.Operator):
                     start_frame, end_frame = map(int, frame_range.split('-'))
                     for frame in range(start_frame, end_frame + 1):
                         scene.frame_set(frame)
-                        scene.render.filepath = os.path.join(original_filepath, f"{cam_setting.camera.name}_frame_{frame}")
+                        scene.render.filepath = os.path.join(original_filepath, f"{cam_setting.camera.name}_frame{frame}")
                         bpy.ops.render.render(write_still=True, use_viewport=cam_setting.show_preview)
                 else:
                     scene.frame_set(int(frame_range))
-                    scene.render.filepath = os.path.join(original_filepath, f"{cam_setting.camera.name}_frame_{frame_range}")
+                    scene.render.filepath = os.path.join(original_filepath, f"{cam_setting.camera.name}_frame{frame_range}")
                     bpy.ops.render.render(write_still=True, use_viewport=cam_setting.show_preview)
 
         scene.camera = original_camera

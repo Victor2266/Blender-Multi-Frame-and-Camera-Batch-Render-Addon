@@ -34,5 +34,7 @@ I made a hacky solution to the issue of render previews that seems to work for m
 
 ## Installation:
 Just Download this repo as a zip file and install it like any other blender add-on. 
+![image](https://github.com/Victor2266/Blender-Multi-Frame-and-Camera-Selector-Addon/assets/46388269/40889a38-0aab-4a96-af62-46404082b76f)
+![image](https://github.com/Victor2266/Blender-Multi-Frame-and-Camera-Selector-Addon/assets/46388269/2c5a01ee-ae0b-4bf5-9851-304a6cad0253)
 
 Works as of version 4.1.0

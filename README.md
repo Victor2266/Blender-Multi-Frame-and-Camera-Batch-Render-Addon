@@ -31,8 +31,8 @@ Make sure you set the output path to a directory and not a file.
 ![image](https://github.com/Victor2266/Blender-Multi-Frame-and-Camera-Selector-Addon/assets/46388269/09ecede9-445a-430c-aea3-1a84ea13b5b5)
 
 **WIP**
-You can enable or disable the render preview, disabling this option will save a bit on RAM depending on the resolution of the image preview. Disabling this option will also lock up blender until the render is finished.
-I made a hacky solution to the issue of render previews that seems to work for me.
+You can enable or disable the render preview window for each camera, disabling this option will save on some RAM depending on the resolution of the image preview. Disabling this option will also lock up Blender until the render is finished.
+The implementation is a hacky solution that seems to work for me, disable the preview if it doesn't work.
 
 ## Installation:
 Just Download this repo as a zip file and install it like any other blender add-on. 

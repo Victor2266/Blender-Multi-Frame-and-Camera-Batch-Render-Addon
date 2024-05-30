@@ -109,6 +109,11 @@ class RenderJob:
             if not scene.render.use_overwrite and os.path.isfile(bpy.path.abspath(check_filepath)):
                 print(f"Skipping frame {frame} with {self.cam_setting.camera.name} because it has already been rendered")
                 # Skip this frame and move to the next one
+                def set_is_running_true():
+                    self.is_running = True
+                
+                bpy.app.timers.register(set_is_running_true)
+                
                 bpy.app.timers.register(lambda: self.render_next_frame(bpy.context), first_interval=1.0)
             else:
                 bpy.app.handlers.render_post.append(self.render_post_handler)

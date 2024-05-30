@@ -32,6 +32,7 @@ Make sure you set the output path to a directory and not a file.
 You can enable or disable the render preview, disabling this option will save a bit on RAM depending on the resolution of the image preview. Disabling this option will also lock up blender until the render is finished.
 I made a hacky solution to the issue of render previews that seems to work for me.
 
+## Installation:
 Just Download this repo as a zip file and install it like any other blender add-on. 
 
 Works as of version 4.1.0

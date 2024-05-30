@@ -14,15 +14,20 @@ With this add-on, the active camera will automatically be swapped so you can ren
 ## Instructions:
 
 You can specify individual frames by entering the frame numbers separated by commas 
-- (e.g., 11,25,250).
+- (e.g., 1,25,250).
 
 You can specify ranges of frames by entering the start and end frames separated by a dash 
 - (e.g., 25-40).
 
 If you want to specify both individual frames and ranges, you can do so by separating them with commas
 - (e.g., 11,25,250,25-40).
+- 
+![image](https://github.com/Victor2266/Blender-Multi-Frame-and-Camera-Selector-Addon/assets/46388269/e5324d3f-6c3b-48d2-8b25-683441a6a0ea)
 
 Make sure you set the output path to a directory and not a file.
 
+![image](https://github.com/Victor2266/Blender-Multi-Frame-and-Camera-Selector-Addon/assets/46388269/09ecede9-445a-430c-aea3-1a84ea13b5b5)
+
 **WIP**
 You can enable or disable the render preview, disabling this option will save a bit on RAM depending on the resolution of the image preview. Disabling this option will also lock up blender until the render is finished.
+I made a hacky solution to the issue of render previews that seems to work for me.

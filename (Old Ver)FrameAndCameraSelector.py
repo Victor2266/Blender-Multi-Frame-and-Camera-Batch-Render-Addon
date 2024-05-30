@@ -10,9 +10,9 @@ bl_info = {
 
 import bpy
 import os
-import time
 
 class CameraSettings(bpy.types.PropertyGroup):
+    """Group of properties representing a camera setting."""
     camera: bpy.props.PointerProperty(
         name="Camera",
         type=bpy.types.Object,
@@ -24,13 +24,9 @@ class CameraSettings(bpy.types.PropertyGroup):
         description="Specify frames or frame ranges separated by commas. For example: 11,25,250 or 25-40",
         default="",
     )
-    show_preview: bpy.props.BoolProperty(
-        name="Show Preview",
-        description="If checked, the render will show a preview (uses more RAM)",
-        default=False,
-    )
 
 class CustomRenderPanel(bpy.types.Panel):
+    """Creates a Panel in the Render properties window"""
     bl_label = "Frame & Camera Selector - Render Panel"
     bl_idname = "RENDER_PT_custom"
     bl_space_type = 'PROPERTIES'
@@ -47,10 +43,9 @@ class CustomRenderPanel(bpy.types.Panel):
             row.prop(cam_setting, "camera", text=f"Camera {i+1}")
             row.operator("scene.remove_cam_setting", text="", icon='X').index = i
             box.prop(cam_setting, "frame_ranges", text="Frames or Frame Ranges")
-            box.prop(cam_setting, "show_preview", text="Show Preview")
 
         layout.operator("scene.add_cam_setting", text="Add Camera Setting")
-        layout.operator("render.my_operator", text="Render Frames")
+        layout.operator("scene.render_frames", text="Render Frames")
 
 class SCENE_OT_AddCamSetting(bpy.types.Operator):
     bl_idname = "scene.add_cam_setting"
@@ -69,103 +64,44 @@ class SCENE_OT_RemoveCamSetting(bpy.types.Operator):
         context.scene.cam_settings.remove(self.index)
         return {'FINISHED'}
 
-class RenderJob:
-    def __init__(self, index, cam_setting):
-        self.index = index
-        self.cam_setting = cam_setting
-        self.frames = []
-        self.is_running = False
-
-    def start(self, context):
-        scene = context.scene
-        scene.camera = self.cam_setting.camera
-        frame_ranges = self.cam_setting.frame_ranges.split(',')
-        
-        for frame_range in frame_ranges:
-            if '-' in frame_range:
-                start_frame, end_frame = map(int, frame_range.split('-'))
-                self.frames.extend(range(start_frame, end_frame + 1))
-            else:
-                self.frames.append(int(frame_range))
-        self.original_filepath = scene.render.filepath
-        self.render_next_frame(context)
-
-    def render_next_frame(self, context):
-        if self.frames:
-            frame = self.frames.pop(0)
-            scene = context.scene
-            scene.frame_set(frame)
-            scene.render.filepath = os.path.join(self.original_filepath, f"{self.cam_setting.camera.name}_frame{frame}")
-            bpy.app.handlers.render_post.append(self.render_post_handler)
-            print(f"Started rendering frame {frame} with {self.cam_setting.camera.name}")
-            def set_is_running_true():
-                self.is_running = True
-            
-            bpy.app.timers.register(set_is_running_true)
-
-            bpy.ops.render.render('INVOKE_DEFAULT' if self.cam_setting.show_preview else 'EXEC_DEFAULT', write_still=True)
-            
-
-        else:
-            self.finish()
-
-    def render_post_handler(self, scene, dummy):
-        bpy.app.handlers.render_post.remove(self.render_post_handler)
-        print("Finished rendering a frame POST")
-        bpy.app.timers.register(lambda: self.render_next_frame(bpy.context), first_interval=1.0)
-
-    def finish(self):
-        def set_is_running_false():
-            self.is_running = False
-            bpy.context.scene.render.filepath = self.original_filepath
-            print(f"Finished rendering all frames with {self.cam_setting.camera.name}")
-
-        bpy.app.timers.register(set_is_running_false)
-
-
-class RenderOperator(bpy.types.Operator):
-    bl_idname = "render.my_operator"
-    bl_label = "Render Operator"
-
-    _timer = None
-    _jobs = []
-    _current_job = None
+class SCENE_OT_RenderFrames(bpy.types.Operator):
+    bl_idname = "scene.render_frames"
+    bl_label = "Render Frames"
 
     def execute(self, context):
-        self._jobs = [RenderJob(i, cam_setting) for i, cam_setting in enumerate(context.scene.cam_settings)]
-        print(self._jobs)
-        self._current_job = None
+        scene = context.scene
+        original_camera = scene.camera
+        original_frame = scene.frame_current
+        original_filepath = scene.render.filepath
 
-        wm = context.window_manager
-        self._timer = wm.event_timer_add(1.0, window=context.window)
-        wm.modal_handler_add(self)
+        # Check if the original output path is a directory
+        if not os.path.isdir(original_filepath):
+            self.report({'ERROR'}, "The output path is not a directory.")
+            return {'CANCELLED'}
 
-        return {'RUNNING_MODAL'}
+        for cam_setting in scene.cam_settings:
+            scene.camera = cam_setting.camera
+            frame_ranges = cam_setting.frame_ranges.split(',')
 
-    def modal(self, context, event):
-        if event.type == 'TIMER':
-            print("TIMER EVENT TRIGGERED.")
-            print(self._jobs)
-            print(self._current_job)
-            if self._current_job is not None:
-                print(self._current_job.is_running)
-                
-            if self._current_job is None or not self._current_job.is_running:
-                if self._jobs:
-                    self._current_job = self._jobs.pop(0)
-                    self._current_job.start(context)
+
+            for frame_range in frame_ranges:
+                if '-' in frame_range:
+                    start_frame, end_frame = map(int, frame_range.split('-'))
+                    for frame in range(start_frame, end_frame + 1):
+                        scene.frame_set(frame)
+                        scene.render.filepath = os.path.join(original_filepath, f"{cam_setting.camera.name}_frame{frame}")
+                        bpy.ops.render.render(write_still=True)
                 else:
-                    return self.cancel(context)
-        return {'PASS_THROUGH'}
+                    scene.frame_set(int(frame_range))
+                    scene.render.filepath = os.path.join(original_filepath, f"{cam_setting.camera.name}_frame{frame_range}")
+                    bpy.ops.render.render(write_still=True)
 
+        scene.camera = original_camera
+        scene.frame_set(original_frame)
+        scene.render.filepath = original_filepath
 
-    def cancel(self, context):
-        wm = context.window_manager
-        wm.event_timer_remove(self._timer)
-        if self._current_job:
-            self._current_job.finish()
-        print("All Camera Jobs Completed.")
-        return {'CANCELLED'}
+        return {'FINISHED'}
+
 
 def register():
     bpy.utils.register_class(CameraSettings)
@@ -173,7 +109,7 @@ def register():
     bpy.utils.register_class(CustomRenderPanel)
     bpy.utils.register_class(SCENE_OT_AddCamSetting)
     bpy.utils.register_class(SCENE_OT_RemoveCamSetting)
-    bpy.utils.register_class(RenderOperator) 
+    bpy.utils.register_class(SCENE_OT_RenderFrames)
 
 def unregister():
     del bpy.types.Scene.cam_settings
@@ -181,7 +117,7 @@ def unregister():
     bpy.utils.unregister_class(CustomRenderPanel)
     bpy.utils.unregister_class(SCENE_OT_AddCamSetting)
     bpy.utils.unregister_class(SCENE_OT_RemoveCamSetting)
-    bpy.utils.unregister_class(RenderOperator) 
+    bpy.utils.unregister_class(SCENE_OT_RenderFrames)
 
 if __name__ == "__main__":
     register()

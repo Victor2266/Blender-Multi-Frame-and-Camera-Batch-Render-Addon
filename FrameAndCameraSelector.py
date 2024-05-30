@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Multiple Frame and Camera Selector",
     "author": "Victor Do",
-    "version": (2, 0),
+    "version": (2, 1),
     "blender": (2, 80, 0),
     "location": "Render Properties > Custom Render Panel",
     "description": "Allows specifying custom frames or frame ranges and multiple cameras for rendering in batches",
@@ -75,6 +75,7 @@ class RenderJob:
         self.cam_setting = cam_setting
         self.frames = []
         self.is_running = False
+        self.is_cancelled = False
 
     def start(self, context):
         scene = context.scene
@@ -89,6 +90,8 @@ class RenderJob:
                 self.frames.append(int(frame_range))
         self.original_filepath = scene.render.filepath
         self.render_next_frame(context)
+        
+        bpy.app.handlers.render_cancel.append(self.render_cancel_handler)
 
     def render_next_frame(self, context):
         if self.frames:
@@ -113,6 +116,15 @@ class RenderJob:
         bpy.app.handlers.render_post.remove(self.render_post_handler)
         print("Finished rendering a frame POST")
         bpy.app.timers.register(lambda: self.render_next_frame(bpy.context), first_interval=1.0)
+
+    def render_cancel_handler(self, scene, dummy):
+        bpy.app.handlers.render_post.remove(self.render_post_handler)
+        bpy.app.handlers.render_cancel.remove(self.render_cancel_handler)
+        print("Cancel Render")
+        def set_is_cancelled_true():
+            self.is_cancelled = True
+        
+        bpy.app.timers.register(set_is_cancelled_true)
 
     def finish(self):
         def set_is_running_false():
@@ -156,6 +168,10 @@ class RenderOperator(bpy.types.Operator):
                     self._current_job.start(context)
                 else:
                     return self.cancel(context)
+            
+            if self._current_job.is_cancelled:
+                return self.cancel(context)
+
         return {'PASS_THROUGH'}
 
 

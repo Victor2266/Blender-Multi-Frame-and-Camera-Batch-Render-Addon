@@ -1,15 +1,15 @@
 
-# Blender-Multi-Frame-and-Camera-Selector
+# Blender-Multi-Frame-and-Camera-Batch-Renderer
 
 ## Description:
 
-This is my code for a blender addon that allows me to select specific frames and cameras to render from automatically. 
+This is my code for a blender addon that allows me to select specific frames and cameras to render from all at once. 
 
 Have you ever wanted to automate the tedious process of rendering from specific frames or frame ranges and having to switch the active camera?
 
-For example, when you make an animation and want to use render certain frames from different camera angles?
+For example, when you make an animation and want to render certain frames from different camera angles?
 
-With this add-on, the active camera will automatically be swapped so you can render frame 42 from as many camera angles as you like all at the press of a single button.
+With this add-on, the active camera will automatically be swapped so you can render any frame range from as many camera angles as you like all at the press of a single button.
 
 ## Instructions:
 
@@ -28,7 +28,12 @@ If you want to specify both individual frames and ranges, you can do so by separ
 
 Make sure you set the output path to a directory and not a file.
 
+If you disable overwriting then it will skip the existing frames in the output directory (only works for .png .jpg .bmp .tiff .exr files for now). 
 ![image](https://github.com/Victor2266/Blender-Multi-Frame-and-Camera-Selector-Addon/assets/46388269/09ecede9-445a-430c-aea3-1a84ea13b5b5)
+
+You probably want to disable Persistent Data under the performance options of Blender because if you are taking photos from multiple angles you want Blender to recalculate the amount of VRAM it needs for each angle instead of always using VRAM when it doesn't need to and eventually running out.
+![image](https://github.com/Victor2266/Blender-Multi-Frame-and-Camera-Selector-Addon/assets/46388269/15149de3-90c5-42b9-b78a-9f1722ff3f69)
+
 
 **WIP**
 You can enable or disable the render preview window for each camera, disabling this option will save on some RAM depending on the resolution of the image preview. Disabling this option will also lock up Blender until the render is finished so you'd have the close Blender to cancel a render partway through.
@@ -39,4 +44,4 @@ Just Download this repo as a zip file and install it like any other blender add-
 ![image](https://github.com/Victor2266/Blender-Multi-Frame-and-Camera-Selector-Addon/assets/46388269/40889a38-0aab-4a96-af62-46404082b76f)
 ![image](https://github.com/Victor2266/Blender-Multi-Frame-and-Camera-Selector-Addon/assets/46388269/2c5a01ee-ae0b-4bf5-9851-304a6cad0253)
 
-Works as of version 4.1.0
+Works as of Blender version 4.1.0

@@ -107,7 +107,7 @@ class RenderJob:
 
             # Check if the file already exists and if overwrite is disabled
             if not scene.render.use_overwrite and os.path.isfile(bpy.path.abspath(check_filepath)):
-                print(f"Skipping frame {frame} with {self.cam_setting.camera.name} because it has already been rendered")
+                print("MFCBR --- " +f"Skipping frame {frame} with {self.cam_setting.camera.name} because it has already been rendered")
                 # Skip this frame and move to the next one
                 def set_is_running_true():
                     self.is_running = True
@@ -117,7 +117,7 @@ class RenderJob:
                 bpy.app.timers.register(lambda: self.render_next_frame(bpy.context), first_interval=1.0)
             else:
                 bpy.app.handlers.render_post.append(self.render_post_handler)
-                print(f"Started rendering frame {frame} with {self.cam_setting.camera.name}")
+                print("MFCBR --- " +f"Started rendering frame {frame} with {self.cam_setting.camera.name}")
                 def set_is_running_true():
                     self.is_running = True
                 
@@ -129,7 +129,7 @@ class RenderJob:
 
     def render_cancel_handler(self, scene, dummy):
         bpy.app.handlers.render_cancel.remove(self.render_cancel_handler)
-        print("Cancel Render")
+        print("MFCBR --- Cancel Render")
         def set_is_cancelled_true():
             self.is_cancelled = True
         
@@ -137,7 +137,7 @@ class RenderJob:
 
     def render_post_handler(self, scene, dummy):
         bpy.app.handlers.render_post.remove(self.render_post_handler)
-        print("Finished rendering a frame POST")
+        print("MFCBR --- Finished rendering a frame POST")
         if (not self.is_cancelled):
             bpy.app.timers.register(lambda: self.render_next_frame(bpy.context), first_interval=1.0)
 
@@ -147,7 +147,7 @@ class RenderJob:
         def set_is_running_false():
             self.is_running = False
             bpy.context.scene.render.filepath = self.original_filepath
-            print(f"Finished rendering all frames with {self.cam_setting.camera.name}")
+            print(f"MFCBR --- Finished rendering all frames with {self.cam_setting.camera.name}")
 
         bpy.app.timers.register(set_is_running_false)
 
@@ -173,12 +173,12 @@ class RenderOperator(bpy.types.Operator):
 
     def modal(self, context, event):
         if event.type == 'TIMER':
-            print("TIMER EVENT TRIGGERED.")
-            print(self._jobs)
-            print(self._current_job)
-            if self._current_job is not None:
-                print(self._current_job.is_running)
-                print(self._current_job.is_cancelled)
+            #print("MFCBR --- TIMER EVENT TRIGGERED.")
+            #print("MFCBR --- " +self._jobs)
+            #print("MFCBR --- " +self._current_job)
+            #if self._current_job is not None:
+            #    print("MFCBR --- " +self._current_job.is_running)
+            #    print("MFCBR --- " +self._current_job.is_cancelled)
                 
             if self._current_job is not None and self._current_job.is_cancelled:
                 return self.cancel(context)
@@ -199,7 +199,7 @@ class RenderOperator(bpy.types.Operator):
         wm.event_timer_remove(self._timer)
         if self._current_job:
             self._current_job.finish()
-        print("All Camera Jobs Completed.")
+        print("MFCBR --- All Camera Jobs Completed.")
         return {'CANCELLED'}
 
 def register():

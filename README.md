@@ -27,7 +27,7 @@ If you want to specify both individual frames and ranges, you can do so by separ
 ![image](https://github.com/Victor2266/Blender-Multi-Frame-and-Camera-Selector-Addon/assets/46388269/e5324d3f-6c3b-48d2-8b25-683441a6a0ea)
 
 Make sure you set the output path to a directory and not a file.
-
+If you disable overwriting then it will skip the existing frames in the output directory (only works for .png .jpg .bmp .tiff .exr files for now). 
 ![image](https://github.com/Victor2266/Blender-Multi-Frame-and-Camera-Selector-Addon/assets/46388269/09ecede9-445a-430c-aea3-1a84ea13b5b5)
 
 **WIP**

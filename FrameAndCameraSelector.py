@@ -88,6 +88,11 @@ class SCENE_OT_RenderFrames(bpy.types.Operator):
         for cam_setting in scene.cam_settings:
             scene.camera = cam_setting.camera
             frame_ranges = cam_setting.frame_ranges.split(',')
+            
+            # Check if preview window should be shown.
+            preview_option = 'write_still=True'
+            if cam_setting.show_preview:
+                preview_option = 'INVOKE_DEFAULT'
 
             for frame_range in frame_ranges:
                 if '-' in frame_range:
@@ -95,17 +100,11 @@ class SCENE_OT_RenderFrames(bpy.types.Operator):
                     for frame in range(start_frame, end_frame + 1):
                         scene.frame_set(frame)
                         scene.render.filepath = os.path.join(original_filepath, f"{cam_setting.camera.name}_frame{frame}")
-                        if cam_setting.show_preview:
-                            bpy.ops.render.render('INVOKE_DEFAULT', write_still=True)
-                        else:
-                            bpy.ops.render.render(write_still=True)
+                        bpy.ops.render.render(write_still=True, use_viewport=cam_setting.show_preview)
                 else:
                     scene.frame_set(int(frame_range))
                     scene.render.filepath = os.path.join(original_filepath, f"{cam_setting.camera.name}_frame{frame_range}")
-                    if cam_setting.show_preview:
-                        bpy.ops.render.render('INVOKE_DEFAULT', write_still=True)
-                    else:
-                        bpy.ops.render.render(write_still=True)
+                    bpy.ops.render.render(write_still=True, use_viewport=cam_setting.show_preview)
 
         scene.camera = original_camera
         scene.frame_set(original_frame)

@@ -36,7 +36,7 @@ You probably want to disable Persistent Data under the performance options of Bl
 
 
 **WIP**
-You can enable or disable the render preview window for each camera, disabling this option will save on some RAM depending on the resolution of the image preview. Disabling this option will also lock up Blender until the render is finished so you'd have the close Blender to cancel a render partway through.
+You can enable or disable the render preview window for each camera, disabling this option will save on some RAM depending on the resolution of the image preview. Disabling this option will also lock up Blender until the render is finished so you'd have to close Blender to cancel a render partway through.
 The implementation of previews is a hacky solution that seems to work for me, disable the preview if it doesn't work.
 
 ## Installation:

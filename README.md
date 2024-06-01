@@ -1,6 +1,5 @@
 
-# Blender Addon
-# Multi-Frame-and-Camera-Batch-Renderer
+# Blender Addon Multi-Frame-and-Camera-Batch-Renderer
 
 ## Description:
 

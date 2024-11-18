@@ -100,7 +100,15 @@ class RenderJob:
             scene.frame_set(frame)
             # Get the file extension based on the render settings
             file_format = scene.render.image_settings.file_format
-            file_extension = '.png' if file_format == 'PNG' else '.jpg' if file_format == 'JPEG' else '.bmp' if file_format == 'BMP' else '.tiff' if file_format == 'TIFF' else '.exr' if file_format == 'OPEN_EXR' else ''
+            # file_extension = '.png' if file_format == 'PNG' else '.jpg' if file_format == 'JPEG' else '.bmp' if file_format == 'BMP' else '.tiff' if file_format == 'TIFF' else '.exr' if file_format == 'OPEN_EXR' else ''
+            file_extension = {
+                'PNG': '.png',
+                'JPEG': '.jpg',
+                'BMP': '.bmp',
+                'TIFF': '.tiff',
+                'OPEN_EXR': '.exr',
+            }.get(file_format, '')
+            
             check_filepath = os.path.join(self.original_filepath, f"{self.cam_setting.camera.name}_frame{frame}{file_extension}")
             filepath = os.path.join(self.original_filepath, f"{self.cam_setting.camera.name}_frame{frame}")
             scene.render.filepath = filepath
